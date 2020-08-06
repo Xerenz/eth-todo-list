@@ -37,6 +37,38 @@ fn main() {
     let s4 = take_and_give_ownership(s3);
 
     println!("I can no longer use s3 but s4 = {}", s4);
+
+    let s3 = String::from("Ok I made a new string here");
+
+    let (s3, len) = return_string_and_length(s3);
+
+    println!("The length of string {} is {}", s3, len);
+
+    println!("length of string {}", get_length(&s3));
+
+    let mut s4 = String::from("Some string");
+    modify_string(&mut s4);
+
+    println!("modified string = {}", s4);
+
+    // code can have any number of immutable references
+    // but only 1 mutable reference
+
+    let x = 5;
+    let r1 = &x;
+    let r2 = &x;
+
+    println!("r1 = {}, r2 = {}", r1, r2);
+
+    let mut z = 5;
+    let r3 = &z; // possible
+    // to have another reference add new scope
+    {
+        let r4 = &z;
+        println!("r4 = {}", r4);
+    }
+    // no r4 after scope
+    println!("r3 = {}", r3);
 }
 
 fn take_ownership(s: String) {
@@ -58,4 +90,32 @@ fn give_ownership() -> String {
 fn take_and_give_ownership(s1: String) -> String {
     println!("I took ownership of s1 = {}", s1);
     return s1;
+}
+
+fn return_string_and_length(s: String) -> (String, usize) {
+    let len: usize = s.len(); // should always be usize
+    return (s, len);
+}
+
+// using referencing
+fn get_length(s: &String) -> usize {
+    s.len()
+}
+
+// mutable referencing
+fn modify_string(s: &mut String) {
+    s.push_str(", this new string got modified");
+}
+
+
+// &str 
+fn first_word(s: &str) -> &str {
+    let s = s.as_bytes();
+
+    for (i, &item) in s.iter().enumerate() {
+        if item == b' ' {
+            return &s[..i];
+        }
+    }
+    return &s[..];
 }
